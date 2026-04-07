@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOEFL iBT Practice Test 11</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --pri:#6C82E6;--acc:#C65A2E;--bg:#F3EDE4;--txt:#3B2A22;
+  --ok:#4CAF50;--err:#F44336;--card:#FFFAF5;--border:#EDE8E3;--gray:#9A8880;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;min-height:100vh;}
+.wrap{max-width:900px;margin:0 auto;padding:20px;}
+
+/* Timer */
+.tbar{position:sticky;top:0;background:#fff;border-bottom:2px solid var(--border);padding:10px 20px;display:flex;justify-content:space-between;align-items:center;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.07);}
+.tleft{display:flex;flex-direction:column;gap:2px;}
+.sec-lbl{font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);}
+.part-lbl{font-size:.82em;color:var(--gray);}
+.tdisp{font-size:1.5em;font-weight:800;color:var(--pri);font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+.tdisp.warn{color:var(--acc);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.tup{background:var(--acc);color:#fff;text-align:center;padding:9px;font-weight:600;font-size:.92em;}
+
+/* Buttons */
+.btn{padding:10px 22px;border:none;border-radius:12px;cursor:pointer;font-size:.93em;font-weight:600;transition:all .18s;font-family:inherit;}
+.btn-pri{background:linear-gradient(135deg,#6C82E6,#5568D4);color:#fff;box-shadow:0 4px 14px rgba(108,130,230,.38);}
+.btn-pri:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(108,130,230,.5);}
+.btn-acc{background:var(--acc);color:#fff;}
+.btn-acc:hover{background:#b54f28;}
+.btn-gray{background:#E8E4DF;color:var(--txt);}
+.btn-gray:hover{background:#ddd8d2;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;}
+
+/* Split layout */
+.split{display:grid;grid-template-columns:44% 54%;gap:18px;align-items:start;}
+.left-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;position:sticky;top:68px;max-height:calc(100vh - 90px);overflow-y:auto;}
+.right-panel{display:flex;flex-direction:column;gap:14px;overflow-y:auto;max-height:calc(100vh - 90px);}
+
+/* Nav row */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:22px;padding-top:14px;border-top:1px solid var(--border);}
+.nav-r{display:flex;gap:10px;align-items:center;}
+
+/* Part header */
+.ph{margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border);}
+.pt{font-size:1.35em;font-weight:800;color:var(--pri);}
+.ps{color:var(--gray);font-size:.86em;margin-top:2px;}
+
+/* Instruction */
+.inst{background:#EEF1FF;border-left:3px solid var(--pri);padding:11px 15px;border-radius:0 8px 8px 0;margin-bottom:18px;font-size:.88em;}
+
+/* Progress */
+.prog-out{background:var(--border);border-radius:4px;height:5px;margin:6px 0;}
+.prog-in{background:var(--pri);height:100%;border-radius:4px;transition:width .3s;}
+
+/* MCQ */
+.qcard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.qtxt{font-weight:600;margin-bottom:11px;font-size:.93em;}
+.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;margin-bottom:7px;cursor:pointer;transition:all .14s;font-size:.9em;}
+.opt:hover{border-color:var(--pri);background:#f0f3ff;}
+.opt.sel{border-color:var(--pri);background:#eef1ff;}
+.opt.cor{border-color:var(--ok);background:#e8f5e9;}
+.opt.wrong{border-color:var(--err);background:#ffebee;}
+.opt-lt{font-weight:700;color:var(--pri);min-width:18px;}
+.ans-hint{font-size:.8em;color:var(--ok);margin-top:5px;font-weight:600;}
+
+/* Letter-box blanks (one box per missing letter) */
+.lboxes{display:inline-flex;gap:3px;vertical-align:middle;margin:0 2px;}
+.lb{width:26px;height:28px;border:none;border-bottom:2.5px solid var(--pri);background:transparent;text-align:center;font-size:.92em;font-family:Helvetica,Arial,sans-serif;font-weight:600;color:var(--acc);outline:none;transition:border-color .15s,background .15s;padding:0;caret-color:var(--acc);}
+.lb:focus{border-bottom-color:var(--acc);background:rgba(108,130,230,.07);}
+.lb.lb-cor{border-bottom-color:var(--ok);color:var(--ok);background:rgba(76,175,80,.08);}
+.lb.lb-wrong{border-bottom-color:var(--err);color:var(--err);background:rgba(244,67,54,.08);}
+.lb:read-only{cursor:default;}
+.para{font-size:.95em;line-height:2.5;}
+.blank-wrap{display:inline-block;position:relative;white-space:nowrap;vertical-align:baseline;}
+.bnum{font-size:.65em;vertical-align:super;color:var(--pri);font-weight:800;margin-right:1px;}
+.pfx{font-weight:700;color:var(--txt);font-size:.95em;letter-spacing:.01em;}
+.bi{border:none;border-bottom:2.5px solid var(--pri);background:transparent;padding:1px 2px;font-size:.93em;font-family:'Courier New',Courier,monospace;letter-spacing:3px;color:var(--acc);font-weight:700;outline:none;transition:border-color .15s;text-align:left;min-width:14px;}
+.bi::placeholder{letter-spacing:4px;color:#bbb;font-weight:400;}
+.bi:focus{border-bottom-color:var(--acc);}
+.bi.cor{border-bottom-color:var(--ok);color:var(--ok);}
+.bi.wrong{border-bottom-color:var(--err);color:var(--err);}
+
+/* Word chips */
+.wbank{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.chip{padding:6px 14px;background:var(--pri);color:#fff;border-radius:20px;cursor:pointer;font-size:.88em;user-select:none;transition:all .14s;}
+.chip:hover{background:#5568d4;transform:translateY(-1px);}
+.chip.used{background:#c0c8f0;cursor:default;transform:none;}
+.built{min-height:48px;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;margin:10px 0;background:#fff;font-size:.93em;}
+.bword{display:inline-block;padding:3px 10px;background:var(--acc);color:#fff;border-radius:14px;margin:2px;cursor:pointer;font-size:.88em;}
+.bword:hover{background:#b54f28;}
+
+/* Textarea */
+.ta{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:13px;font-size:.93em;font-family:inherit;line-height:1.75;resize:vertical;min-height:150px;outline:none;background:#fff;color:var(--txt);}
+.ta:focus{border-color:var(--pri);}
+.wc{font-size:.82em;color:var(--gray);text-align:right;margin-top:5px;}
+.wc.warn{color:var(--acc);}
+
+/* Discussion */
+.disc{background:#fff8f5;border:1px solid #f0e0d8;border-radius:12px;padding:18px;margin-bottom:18px;}
+.spk{margin-bottom:12px;}
+.spk-name{font-weight:700;color:var(--acc);font-size:.78em;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+
+/* Passage nav */
+.pnav{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.pdot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78em;font-weight:700;cursor:pointer;transition:all .15s;}
+
+/* Intro */
+.intro{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:20px;}
+.ititle{font-size:2.6em;font-weight:900;color:var(--pri);margin-bottom:4px;}
+.iinfo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;width:100%;max-width:480px;}
+.icard{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;}
+.icard h3{color:var(--pri);font-size:1.05em;margin-bottom:3px;}
+.icard p{color:var(--gray);font-size:.87em;}
+.struct{max-width:480px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:28px;text-align:left;}
+
+/* AI score */
+.sc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:18px;}
+.sc-num{font-size:2.2em;font-weight:900;color:var(--pri);}
+.fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.fb-box{background:#f9f5f0;border-radius:8px;padding:12px;}
+.fb-lbl{font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;}
+
+/* Spinner */
+.spin{display:inline-block;width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--pri);border-radius:50%;animation:sp .75s linear infinite;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Results */
+.res-total{text-align:center;padding:36px;background:var(--card);border-radius:16px;margin-bottom:22px;}
+.res-big{font-size:4.5em;font-weight:900;color:var(--pri);}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;}
+.res-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;}
+.res-s{font-size:2em;font-weight:800;}
+
+/* Results review sections */
+.rev-sec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.rev-title{font-weight:800;font-size:1em;color:var(--pri);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+.rev-q{padding:10px;border-radius:8px;margin-bottom:8px;font-size:.86em;}
+@media(max-width:480px){
+  .split{grid-template-columns:1fr;}
+  .left-panel{position:static;max-height:260px;}
+  .right-panel{max-height:none;}
+  .iinfo,.res-grid,.fb-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="tup" style="display:none;" class="tup">⏰ Time is up! You may still continue.</div>
+<div id="tbar" class="tbar" style="display:none;">
+  <div class="tleft">
+    <div class="sec-lbl" id="slbl">Reading Section</div>
+    <div class="part-lbl" id="plbl">Part 1 — Complete the Words</div>
+  </div>
+  <div class="tdisp" id="tdisp">27:00</div>
+</div>
+<div class="wrap" id="app"></div>
+
+<script>
+// ===== DATA =====
+const D = {
+  r1:{
+    // Loop: segs[0] → blank[0] → segs[1] → blank[1] → segs[2] → ... → blank[9] → segs[10] → segs[11]
+    // Intended sentence (post s1): "Global temperatures have risen sharply over recent decades,
+    // and scientists warn that human activities are the primary cause."
+    segs:[
+      'Climate change is one of the greatest environmental challenges facing humanity. ',
+      ' temperatures ', // after blank[0]=Global,   before blank[1]=have
+      ' risen ',        // after blank[1]=have,      before blank[2]=sharply
+      ' over ',         // after blank[2]=sharply,   before blank[3]=recent
+      ' decades, ',     // after blank[3]=recent,    before blank[4]=and
+      ' scientists ',   // after blank[4]=and,       before blank[5]=warn
+      ' that ',         // after blank[5]=warn,      before blank[6]=human
+      ' activities ',   // after blank[6]=human,     before blank[7]=are
+      ' the ',          // after blank[7]=are,       before blank[8]=primary
+      ' cause. ',       // after blank[8]=primary,   before blank[9]=The
+      '',               // after blank[9]=The        (nothing; segs[11] follows immediately)
+      ' burning of fossil fuels releases greenhouse gases, which trap heat and disrupt natural climate patterns. Without urgent action, the consequences of inaction could be severe. Renewable energy sources are now seen as essential solutions.'
+    ],
+    // prefix = shown as static text; suffix = what the user types; ans = prefix+suffix (full word)
+    blanks:[
+      {prefix:'Glo',  suffix:'bal',   ans:'global'},
+      {prefix:'ha',   suffix:'ve',    ans:'have'},
+      {prefix:'shar', suffix:'ply',   ans:'sharply'},
+      {prefix:'rec',  suffix:'ent',   ans:'recent'},
+      {prefix:'an',   suffix:'d',     ans:'and'},
+      {prefix:'war',  suffix:'n',     ans:'warn'},
+      {prefix:'hum',  suffix:'an',    ans:'human'},
+      {prefix:'ar',   suffix:'e',     ans:'are'},
+      {prefix:'prim', suffix:'ary',   ans:'primary'},
+      {prefix:'Th',   suffix:'e',     ans:'the'}
+    ]
+  },
+  r2:{
+    texts:[
+      {title:'Company Meeting Notification',tag:'Workplace Email',content:`Subject: Q3 Strategy Meeting – Thursday, April 9th\n\nDear Team,\n\nPlease join us for our Q3 strategy review meeting on Thursday, April 9th at 2:00 PM in Conference Room B. The agenda will cover project updates, budget allocation, and upcoming deadlines. Kindly confirm your attendance by Wednesday noon. Please bring your department reports. Light refreshments will be provided. Contact Sarah at ext. 204 if you have any questions.\n\nBest regards,\nManagement`,qi:[0,1,2]},
+      {title:'Gym Class Schedule',tag:'Public Notice',content:`Spring Fitness Schedule – April 2026\n\nMonday: 7:00 AM – Morning Yoga (Studio A) | 6:00 PM – HIIT Training (Main Hall)\nWednesday: 8:00 AM – Pilates (Studio B) | 7:00 PM – Zumba (Main Hall)\nFriday: 7:00 AM – Spin Class (Cycling Room) | 6:30 PM – Boxing Basics (Main Hall)\nSaturday: 9:00 AM – Full Body Strength (Main Hall) | 10:30 AM – Beginner Yoga (Studio A)\n\nAll classes are 45 minutes. Registration required for Spin Class and Boxing. Walk-ins welcome for all other classes.`,qi:[3,4,5]},
+      {title:'Product Return Policy',tag:'Commercial Text',content:`Return & Refund Policy\n\nWe want you to be completely satisfied with your purchase. Items may be returned within 30 days of the purchase date for a full refund, provided they are unused and in original packaging. Sale items are eligible for store credit only. To initiate a return, please contact our customer service team at returns@shopease.com or call 0800-123-456. Refunds are processed within 5–7 business days after the returned item is received and inspected. We do not accept returns on digital products, perishable goods, or personalized items.`,qi:[6,7,8]},
+      {title:'Social Media Contest',tag:'Social Media Post',content:`🎉 Photo Contest Alert!\n\nShare your best spring photos using #SpringVibes2026 for a chance to win!\nTop 3 winners receive gift cards worth $50, $30, and $20.\nContest runs April 1–30. Winners announced May 5.\n\nFollow us for updates and tag a friend to spread the word! 🌸`,qi:[9,10,11]},
+      {title:"Restaurant Menu Notes",tag:'Service Industry Text',content:`Chef's Special Notes – April 2026\n\nOur spring menu features locally sourced ingredients. The salmon dish contains sesame and may not be suitable for those with nut allergies. Vegetarian options are marked with a (V) symbol. Please inform your server of any dietary restrictions before ordering. Our kitchen processes peanuts, tree nuts, and shellfish. Gluten-free bread is available upon request at no extra charge.`,qi:[12,13,14]}
+    ],
+    qs:[
+      // Text 1: Company Meeting Email (qi: 0,1,2)
+      {q:'What is the PRIMARY purpose of this email?',
+       opts:['To announce a change in the company\'s business strategy','To request employees\' attendance and preparation for a meeting','To remind staff that a budget review is overdue','To introduce a new project management system'],
+       ans:1},
+      {q:'A colleague says they "can\'t make it" to the meeting. What should they do FIRST according to the email?',
+       opts:['Email the management team directly','Attend a different meeting instead','Reach out to Sarah at ext. 204','Submit their department report early'],
+       ans:2},
+      {q:'Which of the following can be INFERRED from the email?',
+       opts:['The meeting agenda has already been distributed to all staff','Employees are expected to actively contribute, not just listen','Management is unhappy with the current pace of projects','Conference Room B has recently been renovated'],
+       ans:1},
+
+      // Text 2: Gym Class Schedule (qi: 3,4,5)
+      {q:'A member is free only on Tuesday evenings. What can they conclude from the schedule?',
+       opts:['They can drop in for Zumba without signing up','They will need to register in advance for an evening class','No classes are available on that day','They should contact the gym to check for unlisted classes'],
+       ans:2},
+      {q:'Which member would need to PLAN AHEAD before attending their chosen class?',
+       opts:['Someone who wants to try low-impact exercise on Monday mornings','Someone interested in a strength workout on Saturday','Someone who wants to take a cycling class on Friday mornings','Someone looking for a dance-based class on Wednesday evenings'],
+       ans:2},
+      {q:'What does the schedule suggest about the gym\'s approach to fitness offerings?',
+       opts:['It caters exclusively to members who prefer morning workouts','It provides variety for both early-morning and after-work schedules','Weekend classes are reserved for advanced members only','All classes are designed to be taken in sequence throughout the week'],
+       ans:1},
+
+      // Text 3: Return Policy (qi: 6,7,8)
+      {q:'A customer bought a name-engraved water bottle but no longer wants it. What would the store MOST LIKELY tell them?',
+       opts:['They can return it for a full refund if it\'s unused','They qualify for store credit since it was on sale','The item falls outside the scope of the return policy','They must return it within 7 days for any compensation'],
+       ans:2},
+      {q:'A customer\'s return was received and inspected by the store on a Monday. When is the EARLIEST they could expect their money back?',
+       opts:['The same Monday','That Wednesday or Thursday','The following Monday or Tuesday','The following Friday'],
+       ans:2},
+      {q:'Which statement BEST reflects the overall tone and intent of this return policy?',
+       opts:['The store discourages returns by making the process inconvenient','Customers retain some options even when full refunds are unavailable','Returns are only possible if items are defective','The policy treats all product categories equally'],
+       ans:1},
+
+      // Text 4: Social Media Contest (qi: 9,10,11)
+      {q:'What is the MAIN reason the post asks participants to "tag a friend"?',
+       opts:['To allow friends to vote on their favorite entries','To verify the identity of each contestant','To expand the contest\'s visibility to a wider audience','To create a shortlist of eligible participants'],
+       ans:2},
+      {q:'A participant submits a photo on April 29th. Which of the following is TRUE?',
+       opts:['Their entry will be automatically disqualified for being too late','They will know if they won within a few days of submitting','Their photo is eligible, but they face a wait of over a week for results','They must gain a minimum number of likes to qualify'],
+       ans:2},
+      {q:'Based on the post, which of the following can be reasonably INFERRED about how to enter?',
+       opts:['Submitting through the brand\'s website is required','Following the account is a prerequisite for entry','Using the designated hashtag is how entries are tracked','A panel of judges manually reviews each submission'],
+       ans:2},
+
+      // Text 5: Restaurant Menu Notes (qi: 12,13,14)
+      {q:'A diner with a tree nut allergy asks whether the kitchen is safe. What should the server MOST LIKELY communicate?',
+       opts:['All dishes are prepared in a completely nut-free environment','Only the salmon dish poses any allergy risk','The kitchen handles tree nuts, so the diner should discuss their needs carefully','Gluten-free alternatives are available for nut allergy sufferers'],
+       ans:2},
+      {q:'Which guest would find these notes MOST useful BEFORE deciding what to order?',
+       opts:['A regular customer who always orders the same dish','A diner avoiding animal products who wants to identify safe options','Someone celebrating a birthday looking for a special dessert','A customer comparing prices across the menu'],
+       ans:1},
+      {q:'What does the phrase "available upon request" suggest about the gluten-free bread?',
+       opts:['It carries an additional fee that is waived if asked politely','It is not a standard part of the meal but can be arranged','It must be ordered at least one day in advance','It automatically replaces regular bread for gluten-sensitive diners'],
+       ans:1}
+    ]
+  },
+  r3:{
+    passages:[
+      {title:'The Gig Economy',sub:'Business & Economics',qi:[0,1,2,3,4],content:`The gig economy refers to a labor market characterized by short-term contracts and freelance work rather than permanent jobs. The rise of digital platforms such as Uber, Airbnb, and Fiverr has accelerated this transformation, enabling workers to offer services on demand. Proponents argue that gig work provides unparalleled flexibility, allowing individuals to set their own hours and pursue multiple income streams. However, critics highlight significant drawbacks, including the absence of employer-provided benefits such as health insurance and retirement plans. Research indicates that gig workers often face income instability, making long-term financial planning difficult. Furthermore, the legal classification of gig workers as independent contractors rather than employees limits their access to labor protections. Policymakers in several countries are now debating reforms to better protect gig economy participants while preserving the innovation that these platforms provide.`},
+      {title:'Ocean Acidification',sub:'Environmental Science',qi:[5,6,7,8,9],content:`Ocean acidification is a process caused by the absorption of carbon dioxide (CO₂) from the atmosphere into seawater, resulting in a decrease in pH levels. Since the Industrial Revolution, ocean pH has dropped from approximately 8.2 to 8.1, representing a 26% increase in acidity. This seemingly small shift has profound consequences for marine ecosystems. Organisms such as corals, oysters, and sea urchins rely on calcium carbonate to build their shells and skeletons. As water becomes more acidic, carbonate ions become less available, making it increasingly difficult for these organisms to maintain their structures. The decline of coral reefs, often called the "rainforests of the sea," threatens the biodiversity of countless species that depend on them for habitat and food. Researchers warn that if CO₂ emissions are not significantly reduced, ocean acidification could cause irreversible damage to marine food chains by the end of this century.`},
+      {title:'The Flynn Effect',sub:'Psychology',qi:[10,11,12,13,14],content:`The Flynn Effect refers to the substantial and long-sustained increase in intelligence test scores across many parts of the world over the twentieth century. Named after researcher James Flynn, who first documented this phenomenon, the effect demonstrates that IQ scores rose by approximately three points per decade throughout much of the 1900s. Several hypotheses have been proposed to explain this trend. Improved nutrition in early childhood is widely cited as a contributing factor, as adequate brain development requires essential nutrients. Increased access to formal education has also expanded the abstract reasoning skills measured by modern IQ tests. Additionally, greater environmental stimulation through technology, media, and complex problem-solving in daily life may have contributed. However, recent studies suggest that the Flynn Effect may be reversing in some developed nations, with scores plateauing or declining since the 1990s. This "reverse Flynn Effect" raises questions about changing educational practices, increased screen time, and evolving cognitive demands in modern society.`}
+    ],
+    qs:[
+      // ── Passage 1: The Gig Economy (qi 0–4) ────────────────────────────────
+      // Q0 · Easy — Main idea / basic content
+      {q:'What is this passage MAINLY about?',
+       opts:['The history of labor unions in the digital age',
+             'The growth, benefits, and challenges of the gig economy',
+             'How digital platforms generate profits from freelance workers',
+             'Why traditional employment is superior to gig work'],
+       ans:1},
+      // Q1 · Vocabulary — academic word in context
+      {q:'The word "unparalleled" (paragraph 3) most closely means:',
+       opts:['temporary and unstable',
+             'widely recognized',
+             'without equal or comparison',
+             'legally protected'],
+       ans:2},
+      // Q2 · Inference — implicit consequence
+      {q:'What can be INFERRED about a gig worker who becomes seriously ill and cannot work?',
+       opts:['They receive sick pay from the platform they work for',
+             'They are automatically covered by government health programs',
+             'They may face financial hardship with no income or employer benefits',
+             'Their independent contractor status entitles them to compensation'],
+       ans:2},
+      // Q3 · Rhetorical structure — how the author organizes ideas
+      {q:'How does the author ORGANIZE the main body of the passage?',
+       opts:['By listing only the advantages gig work offers workers',
+             'By presenting both benefits and drawbacks, then turning to policy implications',
+             'By contrasting ancient and modern labor markets chronologically',
+             'By classifying gig workers into distinct income categories'],
+       ans:1},
+      // Q4 · Complex sentence / figurative language
+      {q:'The phrase "preserving the innovation that these platforms provide" suggests policymakers want to:',
+       opts:['protect gig companies from paying taxes',
+             'encourage workers to develop new digital skills',
+             'balance worker protections with maintaining industry dynamism',
+             'prevent traditional employers from adopting digital business models'],
+       ans:2},
+
+      // ── Passage 2: Ocean Acidification (qi 5–9) ──────────────────────────
+      // Q5 · Easy — Basic factual detail
+      {q:'According to the passage, what DIRECTLY causes ocean acidification?',
+       opts:['Rising ocean temperatures driven by solar radiation',
+             'Absorption of atmospheric carbon dioxide into seawater',
+             'Agricultural chemical runoff entering coastal waters',
+             'Overfishing, which disrupts the natural pH balance'],
+       ans:1},
+      // Q6 · Figurative language — interpret a metaphor
+      {q:'Why does the author compare coral reefs to "rainforests of the sea"?',
+       opts:['To indicate that reefs are located only in warm tropical regions',
+             'To argue that reefs are more endangered than land-based rainforests',
+             'To emphasize the exceptionally rich diversity of life reefs support',
+             'To show that reefs produce oxygen in the same way forests do'],
+       ans:2},
+      // Q7 · Grammar / complex sentence — parse meaning from structure
+      {q:'The phrase "making it increasingly difficult for these organisms to maintain their structures" implies that:',
+       opts:['The organisms are migrating to less acidic regions of the ocean',
+             'Scientists have developed techniques to help marine animals adapt',
+             'Acidification is a gradual process whose effects worsen over time',
+             'The organisms\' shells dissolve completely once acidity reaches a threshold'],
+       ans:2},
+      // Q8 · Cross-sentence connection — author's rhetorical intent
+      {q:'The author describes the pH shift as "seemingly small." What is the PURPOSE of this phrase?',
+       opts:['To suggest the scientific data may need further verification',
+             'To contrast the minor numerical change with its major ecological consequences',
+             'To argue that ocean acidification is less serious than other environmental issues',
+             'To reassure readers that marine ecosystems can recover quickly'],
+       ans:1},
+      // Q9 · Cause-effect reasoning across the passage
+      {q:'Based on the passage, which chain of events BEST represents the threat posed by acidification?',
+       opts:['Rising CO₂ → warmer oceans → coral bleaching → fish migration',
+             'Rising CO₂ → lower ocean pH → weakened shells → biodiversity loss → damaged food chains',
+             'Industrial pollution → pH drop → reduced fishing yields → economic crisis',
+             'Carbonate loss → plankton decline → reduced oxygen → species extinction'],
+       ans:1},
+
+      // ── Passage 3: The Flynn Effect (qi 10–14) ───────────────────────────
+      // Q10 · Easy — Main idea identification
+      {q:'The Flynn Effect, as described in the passage, refers to:',
+       opts:['A decline in IQ scores observed in developed countries after 1990',
+             'The discovery that IQ tests systematically favor certain cultural groups',
+             'A sustained rise in intelligence test scores across the twentieth century',
+             'James Flynn\'s argument that nutrition is the sole driver of intelligence'],
+       ans:2},
+      // Q11 · Vocabulary in context
+      {q:'The word "hypotheses" as used in the passage is closest in meaning to:',
+       opts:['Conclusions confirmed through repeated experimentation',
+             'Mathematical formulas used to calculate intelligence quotients',
+             'Proposed explanations put forward to account for an observed pattern',
+             'Opinions expressed without any supporting evidence'],
+       ans:2},
+      // Q12 · Inference — implicit relationship
+      {q:'What does the passage IMPLY about the relationship between formal education and IQ test performance?',
+       opts:['Schooling directly increases a person\'s natural intelligence',
+             'Access to education develops the abstract reasoning skills that IQ tests measure',
+             'Children who never attended school are incapable of above-average scores',
+             'Modern IQ tests were deliberately designed to favor educated test-takers'],
+       ans:1},
+      // Q13 · Rhetorical structure — cause-effect organization
+      {q:'How does the author structure the discussion of the "reverse Flynn Effect"?',
+       opts:['By arguing that Flynn\'s original research contained serious methodological flaws',
+             'By comparing IQ score trends across different age brackets and genders',
+             'By naming the trend and then raising questions about its possible causes',
+             'By dismissing it as a short-term fluctuation without long-term significance'],
+       ans:2},
+      // Q14 · Cross-passage inference — connecting earlier and later information
+      {q:'Based on the factors cited for the ORIGINAL Flynn Effect, which inference about the REVERSE trend is best supported?',
+       opts:['Both nutrition and formal education quality have deteriorated globally since 1990',
+             'James Flynn\'s research methodology is no longer accepted by the scientific community',
+             'Shifts in modern lifestyles may be undermining some of the factors that drove scores upward',
+             'IQ tests have become considerably harder in developed nations since the 1990s'],
+       ans:2}
+    ]
+  },
+  w1:[
+    {ctx:'How was the presentation?',words:['received','feedback','positive','it','very'],ans:'It received very positive feedback'},
+    {ctx:'Why did she leave work early?',words:['appointment','had',"doctor's",'she','a'],ans:"She had a doctor's appointment"},
+    {ctx:'What do you think of the new policy?',words:['employees','affects','it','significantly','all'],ans:'It significantly affects all employees'},
+    {ctx:'Did you finish the report?',words:['submitted','already','have','I','it'],ans:'I have already submitted it'},
+    {ctx:'How should we prepare for the interview?',words:['research','the','thoroughly','should','company','you'],ans:'You should research the company thoroughly'},
+    {ctx:'Why is the project delayed?',words:['unexpected','caused','problems','technical','the','delay'],ans:'Unexpected technical problems caused the delay'},
+    {ctx:'What did the manager announce?',words:['team','would','new','hired','be','members'],ans:'New team members would be hired'},
+    {ctx:'How do you stay productive?',words:['breaks','taking','regular','helps','focus','maintain','me'],ans:'Taking regular breaks helps me maintain focus'},
+    {ctx:'What was the conference about?',words:['trends','latest','industry','focused','it','on','the'],ans:'It focused on the latest industry trends'},
+    {ctx:'Why do many people prefer remote work?',words:['commuting','saves','and','time','reduces','it','stress'],ans:'It saves time and reduces commuting stress'}
+  ],
+  w2:{
+    situation:`You recently enrolled in an online professional development course on data analysis through a learning platform called LearnHub. After paying for the course, you discovered that several video lessons are unavailable and the curriculum does not match what was advertised on the website. Write an email to LearnHub's customer support team. In your email, do the following.`,
+    tasks:[
+      'Explain what attracted you to the course and why you signed up',
+      'Describe the specific problems you have encountered',
+      'Ask what steps the platform will take to resolve the issue'
+    ],
+    toLine:'support@learnhub.com',
+    subLine:'Problem with Data Analysis Course Content',
+    range:[80,120],
+    rubric:'email to customer support about missing course content and a mismatched curriculum on an online learning platform'
+  },
+  w3:{
+    course:'Introduction to Social Studies',
+    prof:{name:'Professor Williams',msg:`Social media platforms have transformed the way people communicate and access information. While these platforms connect billions of users worldwide, researchers have raised growing concerns about their effects on mental health — particularly among teenagers and young adults. Should governments introduce regulations that limit how much time young people can spend on social media? Why or why not?`},
+    sa:{name:'Emma',txt:`I think governments absolutely should regulate social media usage for young people. Research consistently links excessive time on platforms like Instagram and TikTok to higher rates of anxiety and depression among teenagers. Without some form of external control, these companies will keep prioritizing user engagement over mental wellbeing. We already regulate tobacco and alcohol to protect public health — social media deserves the same treatment.`},
+    sb:{name:'Marcus',txt:`I respectfully disagree with Emma. The problem isn't social media itself — it's how people use it. Imposing time limits treats the symptom rather than the cause. Governments would be better off funding digital literacy programs that teach young people to use these platforms critically and responsibly. Giving people the tools to make good decisions is far more effective than restricting their choices.`},
+    inst:`Your professor is teaching a class on Social Studies. Write a post responding to the professor's question. In your response, express and support your opinion. Make a contribution to the discussion in your own words.`,
+    range:[100,150],
+    rubric:'academic discussion response about whether governments should regulate young people\'s social media usage'
+  }
+};
+
+// ===== STATE =====
+const S = {
+  screen:'intro', rPart:1, tIdx:0, wPart:1, wQIdx:0,
+  r1ans:Array(10).fill(''),
+  r2ans:Array(15).fill(null),
+  r3ans:Array(15).fill(null),
+  w1built:Array.from({length:10},()=>[]),
+  w2ans:'', w3ans:'',
+  rTime:20*60,
+  // Separate timers per writing part
+  w1Time:5*60, w2Time:7*60, w3Time:10*60,
+  tInt:null,
+  rExp:false, w1Exp:false, w2Exp:false, w3Exp:false,
+  done:false,
+  w2sc:null, w3sc:null, w2ld:false, w3ld:false, w2er:null, w3er:null
+};
+
+// shuffled word orders (computed once)
+let W1ORDERS = null;
+function getW1Order(i){
+  if(!W1ORDERS) W1ORDERS = D.w1.map(q=>shuffle([...q.words]));
+  return W1ORDERS[i];
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ===== HELPERS =====
+const $=id=>document.getElementById(id);
+const app=()=>$('app');
+function wc(t){return t.trim()===''?0:t.trim().split(/\s+/).length;}
+function fmt(s){return`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
+function onW2Input(v){S.w2ans=v;const c=wc(v);const el=$('w2wc');if(el){el.textContent=`Words: ${c} / 80–120`;el.className=`wc${(c<80||c>120)?' warn':''}`;}}
+function onW3Input(v){S.w3ans=v;const c=wc(v);const el=$('w3wc');if(el){el.textContent=`Words: ${c} / 100–150`;el.className=`wc${(c<100||c>150)?' warn':''}`;}}
+
+// ===== TIMER =====
+function startTimer(mode){
+  clearInterval(S.tInt);
+  S.timerMode=mode;
+  updTimer();
+  S.tInt=setInterval(()=>{
+    const m=S.timerMode;
+    const key=m+'Time', expKey=m+'Exp';
+    if(S[key]>0){ S[key]--; updTimer(); }
+    else if(!S[expKey]){ S[expKey]=true; $('tup').style.display='block'; }
+  },1000);
+}
+function updTimer(){
+  const m=S.timerMode||'r';
+  const t = m==='r'?S.rTime : m==='w1'?S.w1Time : m==='w2'?S.w2Time : S.w3Time;
+  const el=$('tdisp'); if(!el) return;
+  el.textContent=fmt(t);
+  el.className='tdisp'+(t<300?' warn':'');
+}
+function stopTimer(){clearInterval(S.tInt);S.tInt=null;}
+
+// ===== NAV =====
+function goReading(){
+  S.screen='r'; S.rPart=1; S.tIdx=0;
+  $('tbar').style.display='flex'; $('tup').style.display='none';
+  startTimer('r'); renderReading();
+}
+function goWriting(){
+  stopTimer(); S.screen='w'; S.wPart=1; S.wQIdx=0;
+  $('tup').style.display='none'; $('slbl').textContent='Writing Section';
+  startTimer('w1'); renderWriting();
+}
+function goResults(){
+  stopTimer(); S.screen='res'; S.done=true;
+  $('tbar').style.display='none'; $('tup').style.display='none';
+  renderResults();
+  // Auto-score writing if user wrote something and not already scored
+  if(!S.w2sc && !S.w2ld && S.w2ans.trim()) autoScoreW2();
+  if(!S.w3sc && !S.w3ld && S.w3ans.trim()) autoScoreW3();
+}
+
+async function autoScoreW2(){
+  S.w2ld=true; renderResults();
+  try{ var ctx='Situation: '+D.w2.situation+'\nTasks: '+D.w2.tasks.join(' / '); S.w2sc=await callScore(S.w2ans,D.w2.rubric,ctx); }
+  catch(e){ S.w2er='Scoring error: '+e.message; }
+  S.w2ld=false; renderResults();
+}
+async function autoScoreW3(){
+  S.w3ld=true; renderResults();
+  try{ var ctx='Professor '+D.w3.prof.name+': "'+D.w3.prof.msg+'"\n'+D.w3.sa.name+': "'+D.w3.sa.txt+'"\n'+D.w3.sb.name+': "'+D.w3.sb.txt+'"'; S.w3sc=await callScore(S.w3ans,D.w3.rubric,ctx); }
+  catch(e){ S.w3er='Scoring error: '+e.message; }
+  S.w3ld=false; renderResults();
+}
+
+// ===== READING RENDER =====
+function renderReading(){
+  $('slbl').textContent='Reading Section';
+  const pnames=['Part 1 — Complete the Words','Part 2 — Reading in Daily Life','Part 3 — Academic Passages'];
+  $('plbl').textContent=pnames[S.rPart-1];
+  if(S.rPart===1) renderR1();
+  else if(S.rPart===2) renderR2();
+  else renderR3();
+}
+function nextRPart(){
+  if(S.rPart===1) saveR1();
+  if(S.rPart<3){S.rPart++;S.tIdx=0;renderReading();}
+  else goWriting();
+}
+function saveR1(){
+  // Collect all letter boxes into S.r1ans
+  for(let i=0;i<10;i++) collectR1(i);
+}
+
+function renderR1(){
+  const segs=D.r1.segs, bl=D.r1.blanks;
+  let html='<p class="para">';
+  html+=segs[0];
+  for(let i=0;i<10;i++){
+    const v=S.r1ans[i]||'';
+    const suf=bl[i].suffix;
+    const letters=v.split('');
+    // Build one box per missing letter
+    let boxes='';
+    for(let j=0;j<suf.length;j++){
+      let cls='lb';
+      if(S.done){
+        const typed=(letters[j]||'').toLowerCase();
+        const expected=suf[j].toLowerCase();
+        cls+=(typed===expected?' lb-cor':' lb-wrong');
+      }
+      const val=escH(letters[j]||'');
+      boxes+=`<input class="${cls}" data-i="${i}" data-j="${j}" maxlength="1" value="${val}" autocomplete="off" spellcheck="false"${S.done?' readonly':''}>`;
+    }
+    html+=`<span class="blank-wrap" style="white-space:nowrap;"><sup class="bnum">${i+1}</sup><span class="pfx">${escH(bl[i].prefix)}</span><span class="lboxes">${boxes}</span></span>`;
+    html+=segs[i+1];
+  }
+  html+=segs[11]; // trailing non-blanked sentences
+  html+='</p>';
+
+  let keyHTML='';
+  if(S.done){
+    keyHTML='<div style="margin-top:22px;border-top:1px solid var(--border);padding-top:16px;"><div style="font-weight:700;color:var(--pri);margin-bottom:10px;font-size:.9em;">Answer Key</div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">';
+    bl.forEach((b,i)=>{
+      const u=S.r1ans[i]||'';
+      const ok=u.toLowerCase()===b.suffix.toLowerCase();
+      keyHTML+=`<div style="padding:9px 8px;border-radius:8px;background:${ok?'#e8f5e9':'#ffebee'};font-size:.83em;text-align:center;">
+        <div style="font-weight:700;color:${ok?'var(--ok)':'var(--err)'};">${i+1}. ${escH(b.ans)}</div>
+        <div style="font-size:.85em;color:var(--gray);margin-top:2px;">${ok?'✓ Correct':`answer: <em>${escH(b.suffix)}</em>`}</div>
+        ${!ok&&u?`<div style="color:var(--err);font-size:.85em;">you typed: ${escH(u)}</div>`:''}
+      </div>`;
+    });
+    keyHTML+='</div></div>';
+  }
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Reading Part 1 — Complete the Words</div><div class="ps">Questions 1–10 · Type the missing letters to complete each word</div></div>
+    <div class="inst">💡 Each box = one missing letter. The word's first letters are shown — just fill in the rest.<br>Example: <strong>sim</strong> <span style="display:inline-flex;gap:2px;vertical-align:middle;"><span style="display:inline-block;width:22px;height:22px;border-bottom:2px solid var(--acc);text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:.9em;color:var(--acc);font-weight:600;">p</span><span style="display:inline-block;width:22px;height:22px;border-bottom:2px solid var(--acc);text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:.9em;color:var(--acc);font-weight:600;">l</span><span style="display:inline-block;width:22px;height:22px;border-bottom:2px solid var(--acc);text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:.9em;color:var(--acc);font-weight:600;">e</span></span> = <strong>simple</strong> &nbsp;|&nbsp; <strong>bu</strong> <span style="display:inline-flex;gap:2px;vertical-align:middle;"><span style="display:inline-block;width:22px;height:22px;border-bottom:2px solid var(--acc);text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:.9em;color:var(--acc);font-weight:600;">t</span></span> = <strong>but</strong></div>
+    <div class="card"><div style="font-size:.78em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--acc);margin-bottom:16px;">Topic: Climate Change &amp; Sustainability</div>${html}${keyHTML}</div>
+    <div class="nav"><div></div><button class="btn btn-acc" onclick="nextRPart()">Next Part →</button></div>`;
+
+  // Event listeners: auto-advance and backspace navigation
+  document.querySelectorAll('.lb').forEach(el=>{
+    el.addEventListener('keydown',e=>{
+      const i=parseInt(el.dataset.i), j=parseInt(el.dataset.j);
+      if(e.key==='Backspace'&&!el.value&&j>0){
+        e.preventDefault();
+        const prev=document.querySelector(`.lb[data-i="${i}"][data-j="${j-1}"]`);
+        if(prev){prev.value='';prev.focus();collectR1(i);}
+      }
+      // Allow arrow key navigation between boxes
+      if(e.key==='ArrowRight'){
+        const next=document.querySelector(`.lb[data-i="${i}"][data-j="${j+1}"]`);
+        if(next) next.focus();
+      }
+      if(e.key==='ArrowLeft'&&j>0){
+        const prev=document.querySelector(`.lb[data-i="${i}"][data-j="${j-1}"]`);
+        if(prev) prev.focus();
+      }
+    });
+    el.addEventListener('input',e=>{
+      const i=parseInt(el.dataset.i), j=parseInt(el.dataset.j);
+      // Keep only the last char typed (in case browser pastes)
+      if(el.value.length>1) el.value=el.value.slice(-1);
+      collectR1(i);
+      // Auto-advance to next box
+      if(el.value){
+        const suf=D.r1.blanks[i].suffix;
+        if(j<suf.length-1){
+          const next=document.querySelector(`.lb[data-i="${i}"][data-j="${j+1}"]`);
+          if(next) next.focus();
+        }
+      }
+    });
+  });
+}
+function collectR1(i){
+  const boxes=document.querySelectorAll(`.lb[data-i="${i}"]`);
+  S.r1ans[i]=Array.from(boxes).map(b=>b.value).join('');
+}
+
+function renderR2(){
+  const txt=D.r2.texts[S.tIdx];
+  const dotRow=D.r2.texts.map((_,i)=>`<div class="pdot" style="background:${i===S.tIdx?'var(--acc)':'var(--border)'};color:${i===S.tIdx?'#fff':'var(--gray)'};" onclick="goT2(${i})">${i+1}</div>`).join('');
+  let qhtml='';
+  txt.qi.forEach(qi=>{
+    const q=D.r2.qs[qi];
+    qhtml+=`<div class="qcard"><div class="qtxt">${qi+1}. ${q.q}</div>`;
+    q.opts.forEach((o,oi)=>{
+      const sel=S.r2ans[qi]===oi;
+      let cls='opt';
+      if(S.done){cls+=(oi===q.ans?' cor':(sel?' wrong':''));}
+      else if(sel) cls+=' sel';
+      qhtml+=`<div class="${cls}" onclick="selR2(${qi},${oi})"><span class="opt-lt">${'ABCD'[oi]}</span><span>${escH(o)}</span></div>`;
+    });
+    if(S.done&&S.r2ans[qi]!==q.ans) qhtml+=`<div class="ans-hint">✓ ${escH(q.opts[q.ans])}</div>`;
+    qhtml+='</div>';
+  });
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Reading Part 2 — Reading in Daily Life</div><div class="ps">Text ${S.tIdx+1} of 5 · ${txt.tag}</div></div>
+    <div class="pnav">${dotRow}<span style="font-size:.82em;color:var(--gray);">Text ${S.tIdx+1}/5: ${escH(txt.title)}</span></div>
+    <div class="split">
+      <div class="left-panel">
+        <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pri);margin-bottom:10px;">${escH(txt.tag)}</div>
+        <div style="font-weight:700;margin-bottom:10px;">${escH(txt.title)}</div>
+        <div style="white-space:pre-line;font-size:.9em;line-height:1.8;">${escH(txt.content)}</div>
+      </div>
+      <div class="right-panel">${qhtml}</div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-gray" onclick="prevT2()" ${S.tIdx===0?'disabled':''}>← Previous Text</button>
+      ${S.tIdx<4?`<button class="btn btn-acc" onclick="nextT2()">Next Text →</button>`:`<button class="btn btn-acc" onclick="nextRPart()">Next Part →</button>`}
+    </div>`;
+}
+function selR2(qi,oi){
+  if(S.done)return;
+  var rp=document.querySelector('.right-panel');
+  var st=rp?rp.scrollTop:0;
+  S.r2ans[qi]=oi;
+  renderR2();
+  var rp2=document.querySelector('.right-panel');
+  if(rp2) rp2.scrollTop=st;
+}
+function goT2(i){S.tIdx=i;renderR2();}
+function nextT2(){if(S.tIdx<4){S.tIdx++;renderR2();}}
+function prevT2(){if(S.tIdx>0){S.tIdx--;renderR2();}}
+
+function renderR3(){
+  const p=D.r3.passages[S.tIdx];
+  const dotRow=D.r3.passages.map((_,i)=>`<div class="pdot" style="background:${i===S.tIdx?'var(--acc)':'var(--border)'};color:${i===S.tIdx?'#fff':'var(--gray)'};" onclick="goP3(${i})">${i+1}</div>`).join('');
+  let qhtml='';
+  p.qi.forEach(qi=>{
+    const q=D.r3.qs[qi];
+    qhtml+=`<div class="qcard"><div class="qtxt">${qi+1}. ${q.q}</div>`;
+    q.opts.forEach((o,oi)=>{
+      const sel=S.r3ans[qi]===oi;
+      let cls='opt';
+      if(S.done){cls+=(oi===q.ans?' cor':(sel?' wrong':''));}
+      else if(sel) cls+=' sel';
+      qhtml+=`<div class="${cls}" onclick="selR3(${qi},${oi})"><span class="opt-lt">${'ABCD'[oi]}</span><span>${escH(o)}</span></div>`;
+    });
+    if(S.done&&S.r3ans[qi]!==q.ans) qhtml+=`<div class="ans-hint">✓ ${escH(q.opts[q.ans])}</div>`;
+    qhtml+='</div>';
+  });
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Reading Part 3 — Academic Passages</div><div class="ps">${escH(p.sub)} · Questions ${p.qi[0]+1}–${p.qi[p.qi.length-1]+1}</div></div>
+    <div class="pnav">${dotRow}<span style="font-size:.82em;color:var(--gray);">Passage ${S.tIdx+1}/3: ${escH(p.title)}</span></div>
+    <div class="split">
+      <div class="left-panel">
+        <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--pri);margin-bottom:6px;">${escH(p.sub)}</div>
+        <div style="font-weight:700;font-size:1.05em;margin-bottom:12px;">${escH(p.title)}</div>
+        <div style="font-size:.9em;line-height:1.85;">${escH(p.content)}</div>
+      </div>
+      <div class="right-panel">${qhtml}</div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-gray" onclick="prevP3()" ${S.tIdx===0?'disabled':''}>← Previous Passage</button>
+      ${S.tIdx<2?`<button class="btn btn-acc" onclick="nextP3()">Next Passage →</button>`:`<button class="btn btn-acc" onclick="goWriting()">Start Writing →</button>`}
+    </div>`;
+}
+function selR3(qi,oi){
+  if(S.done)return;
+  var rp=document.querySelector('.right-panel');
+  var st=rp?rp.scrollTop:0;
+  S.r3ans[qi]=oi;
+  renderR3();
+  var rp2=document.querySelector('.right-panel');
+  if(rp2) rp2.scrollTop=st;
+}
+function goP3(i){S.tIdx=i;renderR3();}
+function nextP3(){if(S.tIdx<2){S.tIdx++;renderR3();}}
+function prevP3(){if(S.tIdx>0){S.tIdx--;renderR3();}}
+
+// ===== WRITING RENDER =====
+function renderWriting(){
+  $('slbl').textContent='Writing Section';
+  const pn=[
+    'Part 1 — Build a Sentence · 5 min',
+    'Part 2 — Email Writing · 7 min',
+    'Part 3 — Academic Discussion · 10 min'
+  ];
+  $('plbl').textContent=pn[S.wPart-1];
+  if(S.wPart===1) renderW1();
+  else if(S.wPart===2) renderW2();
+  else renderW3();
+}
+function nextWPart(){
+  stopTimer();
+  $('tup').style.display='none';
+  S.wPart++;
+  if(S.wPart===2) startTimer('w2');
+  else if(S.wPart===3) startTimer('w3');
+  renderWriting();
+}
+function prevWPart(){
+  stopTimer();
+  $('tup').style.display='none';
+  S.wPart--;
+  startTimer('w'+S.wPart); // resume from wherever the timer is
+  renderWriting();
+}
+
+function renderW1(){
+  const qi=S.wQIdx, q=D.w1[qi];
+  const ord=getW1Order(qi), built=S.w1built[qi];
+  const used=new Set(built);
+  const chips=ord.map((w,i)=>`<span class="chip${used.has(i)?' used':''}" onclick="${used.has(i)?'':'addW('+qi+','+i+')'}">${escH(w)}</span>`).join('');
+  const bwords=built.map((wi,pos)=>`<span class="bword" onclick="rmW(${qi},${pos})">${escH(ord[wi])}</span>`).join(' ');
+
+  let resHTML='';
+  if(S.done){
+    const sentence=built.map(wi=>ord[wi]).join(' ').toLowerCase().trim();
+    const ok=sentence===q.ans.toLowerCase().trim();
+    resHTML=`<div style="margin-top:14px;padding:13px;border-radius:8px;background:${ok?'#e8f5e9':'#ffebee'};">
+      <div style="font-weight:700;color:${ok?'var(--ok)':'var(--err)'};">${ok?'✓ Correct!':'✗ Incorrect'}</div>
+      <div style="font-size:.88em;margin-top:4px;">Correct: <strong>${escH(q.ans)}</strong></div>
+    </div>`;
+  }
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Writing Part 1 — Build a Sentence</div><div class="ps">Question ${qi+1} of 10</div></div>
+    <div class="prog-out"><div class="prog-in" style="width:${(qi+1)/10*100}%"></div></div>
+    <div class="card" style="margin-top:18px;">
+      <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:6px;">Context</div>
+      <div style="font-size:1.08em;font-weight:600;margin-bottom:18px;">"${escH(q.ctx)}"</div>
+      <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:6px;">Word Bank — click to add</div>
+      <div class="wbank">${chips}</div>
+      <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin:14px 0 6px;">Your Sentence — click a word to remove</div>
+      <div class="built">${bwords||'<span style="color:var(--gray);font-size:.88em;">Click words above to build your sentence…</span>'}</div>
+      ${resHTML}
+    </div>
+    <div class="nav">
+      ${qi>0?`<button class="btn btn-gray" onclick="prevW1()">← Previous</button>`:'<div></div>'}
+      <div class="nav-r">
+        <button class="btn btn-gray" onclick="clrW(${qi})">Clear</button>
+        ${qi<9?`<button class="btn btn-acc" onclick="nextW1()">Next →</button>`:`<button class="btn btn-acc" onclick="nextWPart()">Next Part →</button>`}
+      </div>
+    </div>`;
+}
+function addW(qi,wi){if(S.done||S.w1built[qi].includes(wi))return;S.w1built[qi]=[...S.w1built[qi],wi];renderW1();}
+function rmW(qi,pos){if(S.done)return;const a=[...S.w1built[qi]];a.splice(pos,1);S.w1built[qi]=a;renderW1();}
+function clrW(qi){S.w1built[qi]=[];renderW1();}
+function nextW1(){if(S.wQIdx<9){S.wQIdx++;renderW1();}}
+function prevW1(){if(S.wQIdx>0){S.wQIdx--;renderW1();}}
+
+function renderW2(){
+  const p=D.w2, wct=wc(S.w2ans);
+  const wcCls=`wc${(wct<p.range[0]||wct>p.range[1])?' warn':''}`;
+  let scHTML='';
+  if(S.w2ld) scHTML=`<div style="text-align:center;padding:20px;"><div class="spin"></div><div style="margin-top:8px;color:var(--gray);font-size:.88em;">AI is evaluating your response…</div></div>`;
+  else if(S.w2sc) scHTML=renderScore(S.w2sc);
+  else if(S.w2er) scHTML=`<div style="color:var(--err);padding:12px;border-radius:8px;background:#ffebee;font-size:.88em;">${escH(S.w2er)}</div>`;
+
+  const taskList=p.tasks.map(t=>`<li style="margin-bottom:5px;">${escH(t)}</li>`).join('');
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Writing Part 2 — Email Writing</div><div class="ps">Task · 80–120 words · 7 minutes</div></div>
+    <div class="card">
+      <div style="font-size:.88em;line-height:1.8;margin-bottom:14px;">${escH(p.situation)}</div>
+      <ul style="padding-left:20px;font-size:.88em;line-height:2;color:var(--txt);">${taskList}</ul>
+      <div style="margin-top:14px;font-size:.82em;color:var(--gray);">Write as much as you can in complete sentences.</div>
+    </div>
+    <div class="card">
+      <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:10px;">Your Response</div>
+      <div style="font-size:.83em;color:var(--gray);margin-bottom:10px;font-family:'Courier New',monospace;">To: ${escH(p.toLine)}<br>Subject: ${escH(p.subLine)}</div>
+      <textarea class="ta" id="w2ta" rows="8" placeholder="Write your email here…" oninput="onW2Input(this.value)">${escH(S.w2ans)}</textarea>
+      <div class="${wcCls}" id="w2wc">Words: ${wct} / 80–120</div>
+    </div>
+    ${scHTML}
+    <div class="nav">
+      <button class="btn btn-gray" onclick="prevWPart()">← Previous Part</button>
+      <div class="nav-r">
+        <button class="btn btn-acc" onclick="nextWPart()">Next Part →</button>
+      </div>
+    </div>`;
+}
+async function scoreW2(){
+  const ta=$('w2ta'); if(ta) S.w2ans=ta.value;
+  if(!S.w2ans.trim()){alert('Please write your response first.');return;}
+  S.w2ld=true;S.w2sc=null;S.w2er=null;renderW2();
+  const ctx=`Situation: ${D.w2.situation}\nTasks: ${D.w2.tasks.join(' / ')}`;
+  try{S.w2sc=await callScore(S.w2ans,D.w2.rubric,ctx);}
+  catch(e){S.w2er='Scoring error: '+e.message;}
+  S.w2ld=false;renderW2();
+}
+
+function renderW3(){
+  const p=D.w3, wct=wc(S.w3ans);
+  const wcCls=`wc${(wct<p.range[0]||wct>p.range[1])?' warn':''}`;
+  let scHTML='';
+  if(S.w3ld) scHTML=`<div style="text-align:center;padding:20px;"><div class="spin"></div><div style="margin-top:8px;color:var(--gray);font-size:.88em;">AI is evaluating your response…</div></div>`;
+  else if(S.w3sc) scHTML=renderScore(S.w3sc);
+  else if(S.w3er) scHTML=`<div style="color:var(--err);padding:12px;border-radius:8px;background:#ffebee;font-size:.88em;">${escH(S.w3er)}</div>`;
+
+  app().innerHTML=`
+    <div class="ph"><div class="pt">Writing Part 3 — Academic Discussion</div><div class="ps">Task · 100–150 words · 10 minutes</div></div>
+    <div class="inst" style="margin-bottom:14px;">${escH(p.inst)}</div>
+    <div class="disc">
+      <div class="spk">
+        <div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:4px;">${escH(p.course)}</div>
+        <div class="spk-name">🎓 Professor ${escH(p.prof.name)}</div>
+        <div style="font-size:.9em;line-height:1.8;">${escH(p.prof.msg)}</div>
+      </div>
+      <div class="spk" style="margin-top:14px;padding-top:14px;border-top:1px solid #f0e0d8;">
+        <div class="spk-name">📝 ${escH(p.sa.name)}</div>
+        <div style="font-size:.88em;line-height:1.78;">${escH(p.sa.txt)}</div>
+      </div>
+      <div class="spk" style="margin-top:12px;">
+        <div class="spk-name">📝 ${escH(p.sb.name)}</div>
+        <div style="font-size:.88em;line-height:1.78;">${escH(p.sb.txt)}</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:.75em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:8px;">Your Post</div>
+      <textarea class="ta" id="w3ta" rows="9" placeholder="Write your response here…" oninput="onW3Input(this.value)">${escH(S.w3ans)}</textarea>
+      <div class="${wcCls}" id="w3wc">Words: ${wct} / 100–150</div>
+    </div>
+    ${scHTML}
+    <div class="nav">
+      <button class="btn btn-gray" onclick="prevWPart()">← Previous Part</button>
+      <div class="nav-r">
+        <button class="btn btn-acc" onclick="goResults()">Finish &amp; See Results →</button>
+      </div>
+    </div>`;
+}
+async function scoreW3(){
+  const ta=$('w3ta'); if(ta) S.w3ans=ta.value;
+  if(!S.w3ans.trim()){alert('Please write your response first.');return;}
+  S.w3ld=true;S.w3sc=null;S.w3er=null;renderW3();
+  try{
+    const ctx=`Professor ${D.w3.prof.name}: "${D.w3.prof.msg}"\n${D.w3.sa.name}: "${D.w3.sa.txt}"\n${D.w3.sb.name}: "${D.w3.sb.txt}"`;
+    S.w3sc=await callScore(S.w3ans,D.w3.rubric,ctx);
+  }catch(e){S.w3er='Scoring error: '+e.message;}
+  S.w3ld=false;renderW3();
+}
+
+// ===== AI SCORING =====
+async function callScore(response,rubric,ctx){
+  const isEmail=rubric.indexOf('email')!==-1||rubric.indexOf('Email')!==-1;
+  const taskNote=isEmail
+    ? 'This is a TOEFL Write an Email task (target: 80-120 words). A Band 5 email must: address ALL bullet-point tasks explicitly, open with a clear purpose statement, use varied sentence structures (simple, compound, complex, and compound-complex), include at least one subordinate clause and one polite conditional (e.g., "I would appreciate it if..."), and close professionally. The Band 5 example must be 100-120 words. IMPORTANT: Format the email with proper line breaks using \\n. Each part on its own line: salutation, body paragraphs, closing, and name. Example structure: "Dear [Name],\\n\\n[Body paragraph 1]\\n\\n[Body paragraph 2]\\n\\nSincerely,\\n[Your name]"'
+    : 'This is a TOEFL Academic Discussion task (target: 100-150 words). A Band 5 response must: clearly state a personal position in the opening sentence, engage directly with at least one classmate\'s point (agree, disagree, or extend it), support the argument with a concrete example or hypothetical scenario, use a mix of sentence types including at least one adverbial clause, one relative clause, and one concessive clause (e.g., "While X may be true..."), and end with a forward-looking or synthesizing statement. The Band 5 example must be 130-150 words.';
+  const prompt='You are a certified 2026 TOEFL iBT writing examiner. Evaluate this student response for: '+rubric+'.\n\n'
+    +taskNote+'\n\n'
+    +'Context:\n'+ctx+'\n\n'
+    +'Student Response:\n'+response+'\n\n'
+    +'Score 0-5 based on: task completion, coherence/cohesion, lexical resource, and grammatical range/accuracy.\n\n'
+    +'Return ONLY valid JSON with no markdown fences:\n'
+    +'{"score":0,'
+    +'"rationale":"中文評分理由，說明得分依據（60字內）",'
+    +'"strengths":"中文優點，具體指出寫得好的地方（70字內）",'
+    +'"weaknesses":"中文改進建議，具體說明如何提升（70字內）",'
+    +'"corrected_sentence":"Take the weakest sentence from the student response and rewrite it with richer grammar and vocabulary. Format: Original → Improved",'
+    +'"band5_example":"Write a complete Band 5 model response that fully addresses the task. Use varied syntax (simple, compound, complex, compound-complex sentences), sophisticated vocabulary, cohesive devices (furthermore, nevertheless, in contrast, given that), and meet the required word count. Do NOT copy from the student response."}';
+  const res=await fetch('https://dawn-tooth-4dc5.a103405151.workers.dev',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok)throw new Error('HTTP '+res.status);
+  const data=await res.json();
+  const txt=data.content?.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('')||'';
+  return JSON.parse(txt.replace(/```json|```/g,'').trim());
+}
+
+function renderScore(sc){
+  const stars='★'.repeat(sc.score)+'☆'.repeat(5-sc.score);
+  return `<div class="sc-card">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <div>
+        <div class="sc-num">${sc.score}<span style="font-size:.45em;color:var(--gray)">/5</span></div>
+        <div style="color:var(--acc);font-size:1.15em;letter-spacing:2px;">${stars}</div>
+      </div>
+      <div>
+        <div style="font-weight:700;">AI Evaluation</div>
+        <div style="font-size:.88em;color:var(--gray);">${escH(sc.rationale)}</div>
+      </div>
+    </div>
+    <div class="fb-grid">
+      <div class="fb-box">
+        <div class="fb-lbl" style="color:var(--ok);">✓ 優點</div>
+        <div style="font-size:.87em;">${escH(sc.strengths)}</div>
+      </div>
+      <div class="fb-box">
+        <div class="fb-lbl" style="color:var(--err);">✗ 改進空間</div>
+        <div style="font-size:.87em;">${escH(sc.weaknesses)}</div>
+      </div>
+    </div>
+    <div style="background:#f5f0eb;border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div class="fb-lbl" style="color:var(--pri);">✏️ Sentence Improvement</div>
+      <div style="font-size:.87em;font-style:italic;white-space:pre-wrap;">${escH(sc.corrected_sentence)}</div>
+    </div>
+    <div style="background:#eef1ff;border-radius:8px;padding:12px;">
+      <div class="fb-lbl" style="color:var(--pri);">🏆 Band 5 Example</div>
+      <div style="font-size:.87em;white-space:pre-wrap;line-height:1.85;">${escH(sc.band5_example)}</div>
+    </div>
+  </div>`;
+}
+
+// ===== RESULTS helpers (no nested template literals) =====
+function revMCQ(ok, correctText, chosenText){
+  if(ok) return '<div style="color:var(--ok);font-size:.9em;">✓ ' + escH(correctText) + '</div>';
+  return '<div style="color:var(--err);font-size:.9em;">✗ You chose: ' + escH(chosenText||'(no answer)') + '</div>'
+       + '<div style="color:var(--ok);font-size:.9em;">✓ Correct: ' + escH(correctText) + '</div>';
+}
+function revSent(ok, correct, typed){
+  if(ok) return '<div style="color:var(--ok);font-size:.9em;">✓ ' + escH(correct) + '</div>';
+  return '<div style="color:var(--err);font-size:.9em;">✗ You: ' + escH(typed||'(no answer)') + '</div>'
+       + '<div style="color:var(--ok);font-size:.9em;">✓ Correct: ' + escH(correct) + '</div>';
+}
+function revBlank(ok, full, prefix, typed){
+  if(ok) return '<div style="color:var(--ok);font-size:.9em;">✓ Correct</div>';
+  return '<div style="color:var(--err);font-size:.9em;">✗ You: ' + escH(prefix + (typed||'…')) + '</div>';
+}
+function wScoreBlock(ld, sc, er){
+  if(ld) return '<div style="text-align:center;padding:16px;"><div class="spin"></div><div style="margin-top:8px;color:var(--gray);font-size:.85em;">AI is scoring your response…</div></div>';
+  if(sc) return renderScore(sc);
+  if(er) return '<div style="color:var(--err);padding:10px;background:#ffebee;border-radius:8px;font-size:.85em;">' + escH(er) + '</div>';
+  return '<div style="color:var(--gray);font-size:.85em;padding:8px 0;">(No response submitted)</div>';
+}
+
+// TOEFL 0-6 score calculators (0.5 unit steps)
+var R_TABLE=[
+  {min:40,max:40,score:6.0},
+  {min:37,max:39,score:5.5},
+  {min:33,max:36,score:5.0},
+  {min:30,max:32,score:4.5},
+  {min:26,max:29,score:4.0},
+  {min:23,max:25,score:3.5},
+  {min:19,max:22,score:3.0},
+  {min:16,max:18,score:2.5},
+  {min:13,max:15,score:2.0},
+  {min:9, max:12,score:1.5},
+  {min:6, max:8, score:1.0},
+  {min:1, max:5, score:0.5},
+  {min:0, max:0, score:0.0}
+];
+function toflR(r1ok,r2ok,r3ok){
+  var total=r1ok+r2ok+r3ok;
+  for(var k=0;k<R_TABLE.length;k++){
+    if(total>=R_TABLE[k].min&&total<=R_TABLE[k].max) return R_TABLE[k].score;
+  }
+  return 0;
+}
+function toflW(w1ok,w2sc,w3sc){
+  var parts=[w1ok/10],weights=[1];
+  if(w2sc){parts.push(w2sc.score/5);weights.push(1);}
+  if(w3sc){parts.push(w3sc.score/5);weights.push(1);}
+  var sum=0,wtot=0;
+  for(var k=0;k<parts.length;k++){sum+=parts[k]*weights[k];wtot+=weights[k];}
+  var raw=sum/wtot*6;
+  return Math.round(raw*2)/2; // round to nearest 0.5
+}
+function toflTotal(r,w){ return Math.round((r+w)/2*2)/2; } // nearest 0.5
+function scoreColor(v){ return v>=5?'var(--ok)':v>=3.5?'var(--pri)':'var(--err)'; }
+function fmtScore(v){ return Number(v).toFixed(1); }
+
+// ===== RESULTS =====
+function renderResults(){
+  const r1ok=S.r1ans.filter((a,i)=>a.toLowerCase().trim()===D.r1.blanks[i].suffix.toLowerCase()).length;
+  const r2ok=S.r2ans.filter((a,i)=>a===D.r2.qs[i]?.ans).length;
+  const r3ok=S.r3ans.filter((a,i)=>a===D.r3.qs[i]?.ans).length;
+  const w1ok=S.w1built.filter((b,qi)=>{
+    const ord=getW1Order(qi);
+    return b.map(wi=>ord[wi]).join(' ').toLowerCase().trim()===D.w1[qi].ans.toLowerCase().trim();
+  }).length;
+  const tot=r1ok+r2ok+r3ok+w1ok, max=40;
+  const pct=Math.round(tot/max*100);
+  const bar=pct>=70?'var(--ok)':pct>=50?'var(--pri)':'var(--err)';
+  const grade=pct>=85?'Excellent':pct>=70?'Good':pct>=50?'Fair':'Needs Work';
+
+  // ── R1 review ──
+  let r1Rev='<div class="rev-sec"><div class="rev-title">📝 Reading Part 1 — Complete the Words <span style="font-weight:400;font-size:.82em;color:var(--gray);">('+r1ok+'/10)</span></div>';
+  r1Rev+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-top:12px;">';
+  D.r1.blanks.forEach(function(b,i){
+    var u=S.r1ans[i]||'';
+    var ok=u.toLowerCase().trim()===b.suffix.toLowerCase();
+    var bg=ok?'#e8f5e9':'#ffebee';
+    var col=ok?'var(--ok)':'var(--err)';
+    r1Rev+='<div class="rev-q" style="background:'+bg+';">';
+    r1Rev+='<div style="font-weight:700;color:'+col+';">'+(i+1)+'. '+escH(b.prefix)+'<strong>'+escH(b.suffix)+'</strong></div>';
+    r1Rev+=revBlank(ok, b.ans, b.prefix, u);
+    r1Rev+='</div>';
+  });
+  r1Rev+='</div></div>';
+
+  // ── R2 review ──
+  let r2Rev='<div class="rev-sec"><div class="rev-title">📰 Reading Part 2 — Reading in Daily Life <span style="font-weight:400;font-size:.82em;color:var(--gray);">('+r2ok+'/15)</span></div>';
+  D.r2.texts.forEach(function(txt){
+    r2Rev+='<div style="margin-top:14px;"><div style="font-size:.8em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--pri);margin-bottom:8px;">'+escH(txt.title)+'</div>';
+    txt.qi.forEach(function(qi){
+      var q=D.r2.qs[qi]; var sel=S.r2ans[qi]; var ok=sel===q.ans;
+      r2Rev+='<div class="rev-q" style="background:'+(ok?'#e8f5e9':'#ffebee')+';margin-bottom:7px;">';
+      r2Rev+='<div style="font-weight:600;margin-bottom:4px;">'+(qi+1)+'. '+escH(q.q)+'</div>';
+      r2Rev+=revMCQ(ok, q.opts[q.ans], q.opts[sel]);
+      r2Rev+='</div>';
+    });
+    r2Rev+='</div>';
+  });
+  r2Rev+='</div>';
+
+  // ── R3 review ──
+  let r3Rev='<div class="rev-sec"><div class="rev-title">🎓 Reading Part 3 — Academic Passages <span style="font-weight:400;font-size:.82em;color:var(--gray);">('+r3ok+'/15)</span></div>';
+  D.r3.passages.forEach(function(p){
+    r3Rev+='<div style="margin-top:14px;"><div style="font-size:.8em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--pri);margin-bottom:8px;">'+escH(p.title)+'</div>';
+    p.qi.forEach(function(qi){
+      var q=D.r3.qs[qi]; var sel=S.r3ans[qi]; var ok=sel===q.ans;
+      r3Rev+='<div class="rev-q" style="background:'+(ok?'#e8f5e9':'#ffebee')+';margin-bottom:7px;">';
+      r3Rev+='<div style="font-weight:600;margin-bottom:4px;">'+(qi+1)+'. '+escH(q.q)+'</div>';
+      r3Rev+=revMCQ(ok, q.opts[q.ans], q.opts[sel]);
+      r3Rev+='</div>';
+    });
+    r3Rev+='</div>';
+  });
+  r3Rev+='</div>';
+
+  // ── W1 review ──
+  let w1Rev='<div class="rev-sec"><div class="rev-title">🔤 Writing Part 1 — Build a Sentence <span style="font-weight:400;font-size:.82em;color:var(--gray);">('+w1ok+'/10)</span></div>';
+  D.w1.forEach(function(q,qi){
+    var ord=getW1Order(qi);
+    var sentence=S.w1built[qi].map(function(wi){return ord[wi];}).join(' ');
+    var ok=sentence.toLowerCase().trim()===q.ans.toLowerCase().trim();
+    w1Rev+='<div class="rev-q" style="background:'+(ok?'#e8f5e9':'#ffebee')+';margin-top:8px;">';
+    w1Rev+='<div style="font-weight:600;font-size:.9em;margin-bottom:4px;">'+(qi+1)+'. &ldquo;'+escH(q.ctx)+'&rdquo;</div>';
+    w1Rev+=revSent(ok, q.ans, sentence);
+    w1Rev+='</div>';
+  });
+  w1Rev+='</div>';
+
+  // ── Writing samples + AI scores ──
+  var w2raw=S.w2sc?S.w2sc.score:null;
+  var w3raw=S.w3sc?S.w3sc.score:null;
+  let wRev='<div class="rev-sec"><div class="rev-title">✍️ Writing — Your Responses &amp; AI Scores</div>';
+  wRev+='<div style="margin-top:16px;">';
+  wRev+='<div style="font-weight:700;font-size:.92em;color:var(--pri);margin-bottom:8px;">Part 2 — Email Writing <span style="font-weight:400;font-size:.85em;color:var(--gray);">'+(w2raw!==null?w2raw+'/5':'Scoring…')+'</span></div>';
+  wRev+='<div style="background:#f9f5f0;border-radius:8px;padding:14px;font-size:.88em;white-space:pre-wrap;line-height:1.85;border:1px solid var(--border);margin-bottom:10px;">'+escH(S.w2ans||'(no response written)')+'</div>';
+  wRev+=wScoreBlock(S.w2ld, S.w2sc, S.w2er);
+  wRev+='</div>';
+  wRev+='<div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);">';
+  wRev+='<div style="font-weight:700;font-size:.92em;color:var(--pri);margin-bottom:8px;">Part 3 — Academic Discussion <span style="font-weight:400;font-size:.85em;color:var(--gray);">'+(w3raw!==null?w3raw+'/5':'Scoring…')+'</span></div>';
+  wRev+='<div style="background:#f9f5f0;border-radius:8px;padding:14px;font-size:.88em;white-space:pre-wrap;line-height:1.85;border:1px solid var(--border);margin-bottom:10px;">'+escH(S.w3ans||'(no response written)')+'</div>';
+  wRev+=wScoreBlock(S.w3ld, S.w3sc, S.w3er);
+  wRev+='</div></div>';
+
+  // ── TOEFL scale scores ──
+  var rT=toflR(r1ok,r2ok,r3ok);
+  var wT=toflW(w1ok,S.w2sc,S.w3sc);
+  var wFull=!!S.w2sc&&!!S.w3sc;
+  var tT=toflTotal(rT,wT);
+
+  var spinnerSm='<span class="spin" style="width:14px;height:14px;border-width:2px;"></span>';
+
+  // Score card builder
+  function sCard(label, score, isReady, parts){
+    var col=isReady?scoreColor(score):'var(--gray)';
+    var scoreDisp=isReady?'<span style="font-size:2.6em;font-weight:900;color:'+col+';">'+fmtScore(score)+'</span><span style="font-size:1em;color:var(--gray);font-weight:400;"> / 6</span>':spinnerSm;
+    var partsHTML='';
+    parts.forEach(function(p){
+      partsHTML+='<div style="display:flex;justify-content:space-between;font-size:.82em;padding:3px 0;border-bottom:1px solid var(--border);">'
+               +'<span style="color:var(--gray);">'+p.l+'</span>'
+               +'<span style="font-weight:700;color:'+(p.s/p.t>=.7?'var(--ok)':p.s/p.t>=.5?'var(--pri)':'var(--err)')+';">'+p.s+' / '+p.t+'</span>'
+               +'</div>';
+    });
+    return '<div class="res-item" style="text-align:left;padding:16px 18px;">'
+         +'<div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:6px;">'+label+'</div>'
+         +'<div style="margin-bottom:12px;">'+scoreDisp+'</div>'
+         +partsHTML
+         +'</div>';
+  }
+
+  var rCard=sCard('📖 Reading', rT, true, [
+    {l:'Part 1 — Complete the Words', s:r1ok, t:10},
+    {l:'Part 2 — Reading in Daily Life', s:r2ok, t:15},
+    {l:'Part 3 — Academic Passages', s:r3ok, t:15}
+  ]);
+
+  var w2disp=S.w2ld?'…':w2raw!==null?w2raw+'/5':'—';
+  var w3disp=S.w3ld?'…':w3raw!==null?w3raw+'/5':'—';
+  var wCard=sCard('✍️ Writing', wT, wFull, [
+    {l:'Part 1 — Build a Sentence', s:w1ok, t:10},
+    {l:'Part 2 — Email Writing (AI)', s:w2raw!==null?w2raw:0, t:5},
+    {l:'Part 3 — Academic Discussion (AI)', s:w3raw!==null?w3raw:0, t:5}
+  ]);
+  // Override the Part 2/3 rows to show raw AI score display differently
+  // (rebuild writing card manually for AI rows)
+  var wCardManual='<div class="res-item" style="text-align:left;padding:16px 18px;">'
+    +'<div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:6px;">✍️ Writing</div>'
+    +'<div style="margin-bottom:12px;">'+(wFull?'<span style="font-size:2.6em;font-weight:900;color:'+scoreColor(wT)+';">'+fmtScore(wT)+'</span><span style="font-size:1em;color:var(--gray);font-weight:400;"> / 6</span>':spinnerSm+'<span style="font-size:.82em;color:var(--gray);margin-left:8px;">Calculating…</span>')+'</div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:.82em;padding:3px 0;border-bottom:1px solid var(--border);"><span style="color:var(--gray);">Part 1 — Build a Sentence</span><span style="font-weight:700;color:'+(w1ok/10>=.7?'var(--ok)':w1ok/10>=.5?'var(--pri)':'var(--err)')+';">'+w1ok+' / 10</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:.82em;padding:3px 0;border-bottom:1px solid var(--border);"><span style="color:var(--gray);">Part 2 — Email Writing (AI)</span><span style="font-weight:700;color:var(--gray);">'+w2disp+'</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:.82em;padding:3px 0;border-bottom:1px solid var(--border);"><span style="color:var(--gray);">Part 3 — Academic Discussion (AI)</span><span style="font-weight:700;color:var(--gray);">'+w3disp+'</span></div>'
+    +'</div>';
+
+  var totalDisp=wFull
+    ? '<span style="font-size:3.2em;font-weight:900;color:'+scoreColor(tT)+';">'+fmtScore(tT)+'</span><span style="font-size:1.1em;color:var(--gray);font-weight:400;"> / 6</span>'
+    : spinnerSm+'<span style="font-size:.88em;color:var(--gray);margin-left:10px;">Waiting for writing scores…</span>';
+
+  app().innerHTML=
+    '<div style="padding:20px 0 50px;">'
+
+    // ── Total score banner ──
+    +'<div class="res-total">'
+    +'<div style="font-size:.82em;color:var(--gray);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">TOEFL Practice Test 11 &middot; Score Report</div>'
+    +'<div style="font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:4px;">Total Score</div>'
+    +'<div style="margin-bottom:4px;">'+totalDisp+'</div>'
+    +'<div style="font-size:.8em;color:var(--gray);margin-top:2px;">(Reading + Writing average, converted to TOEFL 0–6 scale)</div>'
+    +'</div>'
+
+    // ── Reading & Writing side-by-side ──
+    +'<div class="res-grid" style="margin-bottom:22px;">'+rCard+wCardManual+'</div>'
+
+    +'<div style="text-align:center;margin-bottom:28px;"><button class="btn btn-pri" style="font-size:.9em;padding:10px 28px;" onclick="location.reload()">&#8635; Start a New Test</button></div>'
+    +'<div style="font-size:.82em;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:12px;">Answer Review</div>'
+    +r1Rev+r2Rev+r3Rev+w1Rev+wRev
+    +'</div>';
+}
+
+
+// ===== ESCAPE HTML =====
+function escH(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ===== INTRO =====
+function renderIntro(){
+  app().innerHTML=`
+    <div class="intro">
+      <div style="font-size:3.2em;margin-bottom:6px;">📝</div>
+      <div class="ititle">TOEFL iBT</div>
+      <div style="font-size:1.4em;font-weight:800;color:var(--acc);margin-bottom:2px;">Practice Test 11</div>
+      <div style="font-size:.95em;color:var(--gray);margin-bottom:24px;">2026 Edition</div>
+      <div class="iinfo">
+        <div class="icard"><h3>📖 Reading</h3><p>40 questions<br>20 minutes</p></div>
+        <div class="icard"><h3>✍️ Writing</h3><p>12 questions<br>23 minutes</p></div>
+      </div>
+      <div class="struct">
+        <div style="font-weight:700;margin-bottom:10px;color:var(--txt);">Test Structure</div>
+        <div style="font-size:.88em;color:var(--gray);line-height:2.1;">
+          <div>📝 Reading Part 1 &nbsp;— Complete the Words <span style="float:right;">10 Q</span></div>
+          <div>📰 Reading Part 2 &nbsp;— Reading in Daily Life <span style="float:right;">15 Q</span></div>
+          <div>🎓 Reading Part 3 &nbsp;— Academic Passages <span style="float:right;">15 Q</span></div>
+          <div>🔤 Writing Part 1 &nbsp;&nbsp;— Build a Sentence <span style="float:right;">10 Q</span></div>
+          <div>📧 Writing Part 2 &nbsp;&nbsp;— Email Writing <span style="float:right;">1 Task</span></div>
+          <div>💬 Writing Part 3 &nbsp;&nbsp;— Academic Discussion <span style="float:right;">1 Task</span></div>
+        </div>
+      </div>
+      <button class="btn btn-pri" style="font-size:1.08em;padding:14px 44px;" onclick="goReading()">Start Test →</button>
+    </div>`;
+}
+
+// ===== INIT =====
+renderIntro();
+</script>
+</body>
+</html>
