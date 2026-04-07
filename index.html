@@ -881,8 +881,9 @@ async function callScore(response,rubric,ctx){
     +'"strengths":"中文優點，具體指出寫得好的地方（70字內）",'
     +'"weaknesses":"中文改進建議，具體說明如何提升（70字內）",'
     +'"corrected_sentence":"Take the weakest sentence from the student response and rewrite it with richer grammar and vocabulary. Format: Original → Improved",'
-    +'"band5_example":"Write a complete Band 5 model response that fully addresses the task. Use varied syntax (simple, compound, complex, compound-complex sentences), sophisticated vocabulary, cohesive devices (furthermore, nevertheless, in contrast, given that), and meet the required word count. Do NOT copy from the student response."}';
-  const res=await fetch('https://dawn-tooth-4dc5.a103405151.workers.dev',{
+    +(isEmail
+      ? '"band5_example":"Write a complete Band 5 model email. STRICT: must be exactly 100–120 words, count carefully. Use proper email format with \\n line breaks between salutation, body paragraphs, closing, and name. Varied syntax, sophisticated vocabulary, address all tasks. Do NOT copy the student response."}'
+      : '"band5_example":"Write a complete Band 5 model academic discussion post. STRICT: must be exactly 130–150 words, count carefully. State a clear position in sentence 1, engage with a classmate by name, support with a concrete example, use cohesive devices (furthermore, nevertheless, in contrast). Do NOT copy the student response."}');  const res=await fetch('https://dawn-tooth-4dc5.a103405151.workers.dev',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})
